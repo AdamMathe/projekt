@@ -1,30 +1,7 @@
-/*
-
-*/
 
 #include <stdio.h>
 
-void prikazn (FILE *w, int prvy_text[0], int pocet_znakov)
-{
-	int i;
-	
-	/*kedze toto cele je obalene vo while k == 1 loope, moze sa stlacit nko viackrat a skusat citat viackrat zo suboru - to znaci ze druhe tretie, ... citanie by uz bol prejdeny subor - vzdy ho teda musim zavriet
-	a znovu otvorit */
-	fclose(w);
-	w = fopen("sifra.txt", "r");
-	
-	/*Vetvenie pre pripad kedy sa spravu nepodari nacitatkedze nevedelo precitat dany subor */
-	if (w == NULL)
-	{
-		printf("haha sprava sa nezobrazila");
-	}
-	/*for loop ktory mi do pola povodny_text(v tejto funkcii ako prvy_text) ulozi vsetky znaky zo suboru sifra.txt */
-	for (i = 0; i < pocet_znakov; i++)
-	{
-		prvy_text[i] = getc(w);
-	}
-}
-
+void prikazn (FILE *w, int prvy_text[0], int pocet_znakov, int *nacitane_nko);
 
 
 int main()
@@ -42,16 +19,11 @@ int main()
 	FILE *fr;
 	
 	fr = fopen("sifra.txt", "r");
-
-	/*bude robit tento while loop pokial sa k rovna jednej */
 	
-		/*ZISTUJE POCET ZNAKOV V SUBORE SPOLU */
-
-		
+	/*ZISTUJE POCET ZNAKOV V SUBORE SPOLU */
 	while (getc(fr) != EOF)
 	{
-		pocet_znakov++;	
-			
+		pocet_znakov++;		
 	}
 		
 	/*toto je vetvenie ktore ked je pocetznakov v subore menej ako 1000 tak ho necha zapisat do suboru v takom pocte v akom ho tam realne je */
@@ -79,9 +51,9 @@ int main()
 		/*Vetvenie pre nacitanie sifrovanej spravy do pola */
 		if(prikaz == 'n')
 		{
-			/*funkia prikazn - pyta si 3 argumenty - prvy je subor z ktoreho cita, druhym je adresa na ktoru zapise znaky zo subora, a tretim je pocet_znakov ktore sa nachadzaju v subore */
-			prikazn(fr, &povodny_text[0], pocet_znakov);
-			nacitane_nko = 1;
+			/*funkia prikazn - pyta si 4 argumenty - prvy je subor z ktoreho cita, druhym je adresa na ktoru zapise znaky zo subora, tretim je pocet_znakov ktore sa nachadzaju v subore, stvrtym je adresa premennej nacitane_nko 
+			- kedze potrebujem zmenit v behu funkcie jej hodnotu podla toho ktora vetva sa vykona - a v deklaracii funkcie prikazn je zasa nacitane_nko spravovane ako pointer vsade*/
+			prikazn(fr, &povodny_text[0], pocet_znakov, &nacitane_nko);
 		}
 		
 		/*Toto je vetvenie pre pripad ze uzivatel stlaci na klavesnici pismeno v */
@@ -178,3 +150,32 @@ int main()
 
 	return 0;	
 }
+
+void prikazn (FILE *w, int prvy_text[0], int pocet_znakov, int *nacitane_nko)
+{
+	int i;
+	
+	/*kedze toto cele je obalene vo while k == 1 loope, moze sa stlacit nko viackrat a skusat citat viackrat zo suboru - to znaci ze druhe tretie, ... citanie by uz bol prejdeny subor - vzdy ho teda musim zavriet
+	a znovu otvorit */
+	/*v prvom rade zavrie predosly dokument z ktoreho sa citalo predtym na zistenie poctu znakov - a nasledne ho znovu otvoru na citanie */
+	fclose(w);
+	w = fopen("sifra.txt", "r");
+	
+	/*Vetvenie pre pripad kedy sa spravu nepodari nacitatkedze nevedelo precitat dany subor */
+	if (w == NULL)
+	{
+		printf("Spravu sa nepodarilo nacitat\n");
+		*nacitane_nko = 0;
+	}
+	else
+	{
+		/*for loop ktory mi do pola povodny_text(v tejto funkcii ako prvy_text) ulozi vsetky znaky zo suboru sifra.txt */
+		for (i = 0; i < pocet_znakov; i++)
+		{
+			prvy_text[i] = getc(w);
+		}
+		*nacitane_nko = 1;
+	}
+
+}
+
