@@ -4,6 +4,28 @@
 
 #include <stdio.h>
 
+void prikazn (FILE *w, int prvy_text[0], int pocet_znakov)
+{
+	int i;
+	
+	/*kedze toto cele je obalene vo while k == 1 loope, moze sa stlacit nko viackrat a skusat citat viackrat zo suboru - to znaci ze druhe tretie, ... citanie by uz bol prejdeny subor - vzdy ho teda musim zavriet
+	a znovu otvorit */
+	fclose(w);
+	w = fopen("sifra.txt", "r");
+	
+	/*Vetvenie pre pripad kedy sa spravu nepodari nacitatkedze nevedelo precitat dany subor */
+	if (w == NULL)
+	{
+		printf("haha sprava sa nezobrazila");
+	}
+	/*for loop ktory mi do pola povodny_text(v tejto funkcii ako prvy_text) ulozi vsetky znaky zo suboru sifra.txt */
+	for (i = 0; i < pocet_znakov; i++)
+	{
+		prvy_text[i] = getc(w);
+	}
+}
+
+
 
 int main()
 {
@@ -11,6 +33,7 @@ int main()
 	
 	int c, i, m, j = 0, pocet_znakov = 0, prikaz;
 	int k = 1;
+	/*deklaracia pravdivostnej hodnoty ci je n-ko nacitane - po vykonani prikazn sa zmeni na 1 */
 	int nacitane_nko = 0;
 	int nacitane_ucko = 0;
 	int pismeno = 0;
@@ -56,23 +79,8 @@ int main()
 		/*Vetvenie pre nacitanie sifrovanej spravy do pola */
 		if(prikaz == 'n')
 		{
-			/*Vetvenie pre pripad kedy sa spravu nepodari nacitatkedze nevedelo precitat dany subor */
-			if (fr == NULL)
-			{
-				printf("Spravu sa nepodarilo nacitat\n");
-			}	
-			/*for loop ktory mi do pola povodny_text ulozi vsetky znaky zo suboru sifra.txt */
-			else
-			{	
-				/*kedze toto cele je obalene vo while k == 1 loope, moze sa stlacit nko viackrat a skusat citat viackrat zo suboru - to znaci ze druhe tretie, ... citanie by uz bol prejdeny subor - vzdy ho teda musim zavriet
-				a znovu otvorit */
-				fclose(fr);
-				fr = fopen("sifra.txt", "r");
-				for (i = 0; i < pocet_znakov; i++)
-				{
-					povodny_text[i] = getc(fr);
-				}
-			}
+			/*funkia prikazn - pyta si 3 argumenty - prvy je subor z ktoreho cita, druhym je adresa na ktoru zapise znaky zo subora, a tretim je pocet_znakov ktore sa nachadzaju v subore */
+			prikazn(fr, &povodny_text[0], pocet_znakov);
 			nacitane_nko = 1;
 		}
 		
