@@ -12,6 +12,7 @@ int main()
 	int k = 1;
 	/*deklaracia pravdivostnej hodnoty ci je n-ko nacitane - po vykonani prikazn sa zmeni na 1 */
 	int nacitane_nko = 0;
+	/*deklaracia pravdivostnej hodnoty ci je u-cko nacitane - po vykonani prikazu sa zmeni na 1 */
 	int nacitane_ucko = 0;
 	int pismeno = 0;
 	
@@ -51,7 +52,7 @@ int main()
 		/*Vetvenie pre nacitanie sifrovanej spravy do pola */
 		if(prikaz == 'n')
 		{
-			/*funkia prikazn - pyta si 4 argumenty - prvy je subor z ktoreho cita, druhym je adresa na ktoru zapise znaky zo subora, tretim je pocet_znakov ktore sa nachadzaju v subore, stvrtym je adresa premennej nacitane_nko 
+			/*funkia prikazn - pyta si 4 argumenty - prvy je subor z ktoreho cita, druhym je adresa na ktoru zapise prvy znak zo subora, tretim je pocet_znakov ktore sa nachadzaju v subore, stvrtym je adresa premennej nacitane_nko 
 			- kedze potrebujem zmenit v behu funkcie jej hodnotu podla toho ktora vetva sa vykona - a v deklaracii funkcie prikazn je zasa nacitane_nko spravovane ako pointer vsade*/
 			prikazn(fr, &povodny_text[0], pocet_znakov, &nacitane_nko);
 		}
@@ -151,6 +152,7 @@ int main()
 	return 0;	
 }
 
+/*toto je funkcia prikazn vykonava veci po stlaceni n-ka */
 void prikazn (FILE *w, int prvy_text[0], int pocet_znakov, int *nacitane_nko)
 {
 	int i;
