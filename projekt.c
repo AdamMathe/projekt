@@ -1,14 +1,21 @@
 
 #include <stdio.h>
 
+
+/*funkcia returnuje pocet znakov v subore */
+int PocetZnakovSuboru (FILE *subor);
+
 void prikazn (FILE *w, int prvy_text[0], int pocet_znakov, int *nacitane_nko);
+
+/*funkcia returnuje pocet nacitanych slov v subore */
+int PocetSlovNacitanych (FILE *Subor);
 
 
 int main()
 {
 	int vstup;
 	
-	int c, i, m, j = 0, pocet_znakov = 0, prikaz;
+	int c, i, m, j = 0, prikaz;
 	int k = 1;
 	/*deklaracia pravdivostnej hodnoty ci je n-ko nacitane - po vykonani prikazn sa zmeni na 1 */
 	int nacitane_nko = 0;
@@ -21,27 +28,12 @@ int main()
 	
 	fr = fopen("sifra.txt", "r");
 	
-	/*ZISTUJE POCET ZNAKOV V SUBORE SPOLU */
-	while (getc(fr) != EOF)
-	{
-		pocet_znakov++;		
-	}
-		
-	/*toto je vetvenie ktore ked je pocetznakov v subore menej ako 1000 tak ho necha zapisat do suboru v takom pocte v akom ho tam realne je */
-	if (pocet_znakov < 1000)
-	{
-		pocet_znakov = pocet_znakov;
-	}
-	/*toto je vetvenie aby ked je sprava dlhsia ako 1000 znakov nacitalo nasledne do pola maximalne 1000 znakov */
-	else if (pocet_znakov > 1000)
-	{
-		pocet_znakov = 1000;
-	}
+	printf("Pocet slov nacitanych: %d", PocetSlovNacitanych(fr));
 	
 		
-	/*deklaracia pola povodnytext s poctom prvkov ktory sa rovna poctu znakov v nacitanom subore */
-	int povodny_text[pocet_znakov];
-	int upraveny_text[pocet_znakov];
+	/*deklaracia pola povodnytext s poctom prvkov ktory sa rovna poctu znakov v citanom subore */
+	int povodny_text[PocetZnakovSuboru(fr)];
+	int upraveny_text[PocetZnakovSuboru(fr)];
 	
 	/*toto bude loop ktory bude neustale pytat vstup od pouzivatela kym k = 1. Pri stlaceni gombiku na ukoncenie programu sa tento loop porusi (napr k bude rovne nule, vide sa z neho a program sa skonci) */
 	while (k == 1)
@@ -54,8 +46,9 @@ int main()
 		{
 			/*funkia prikazn - pyta si 4 argumenty - prvy je subor z ktoreho cita, druhym je adresa na ktoru zapise prvy znak zo subora, tretim je pocet_znakov ktore sa nachadzaju v subore, stvrtym je adresa premennej nacitane_nko 
 			- kedze potrebujem zmenit v behu funkcie jej hodnotu podla toho ktora vetva sa vykona - a v deklaracii funkcie prikazn je zasa nacitane_nko spravovane ako pointer vsade*/
-			prikazn(fr, &povodny_text[0], pocet_znakov, &nacitane_nko);
+			prikazn(fr, &povodny_text[0], PocetZnakovSuboru(fr), &nacitane_nko);
 		}
+		
 		
 		/*Toto je vetvenie pre pripad ze uzivatel stlaci na klavesnici pismeno v */
 		else if(prikaz == 'v')
@@ -64,7 +57,7 @@ int main()
 			moze vypisat. ak nebolo nacitane tak prevedie else vetvu tuto - respektive vyprintuje - sprava nie je nacitana a odsadi riadok  */
 			if (nacitane_nko == 1)
 			{
-				for (i = 0; i < pocet_znakov; i++)
+				for (i = 0; i < PocetZnakovSuboru(fr); i++)
 				{
 					printf("%c", povodny_text[i]);
 				}
@@ -78,7 +71,7 @@ int main()
 		/*vetvenie pre pripad ked sa na klavesnici stlaci pismeno u */
 		else if(prikaz == 'u')
 		{
-			for (i = 0; i < pocet_znakov; i++)
+			for (i = 0; i < PocetZnakovSuboru(fr); i++)
 			{
 				/*vetvenie, ktore sleduje ci znak precitany z pola povodny_text je bud velke alebo male pismeno */
 				if ((((povodny_text[i] >= 'A') && (povodny_text[i] <= 'Z')) || ((povodny_text[i] >= 'a') && (povodny_text[i] <= 'z'))) && nacitane_nko == 1)
@@ -130,14 +123,12 @@ int main()
 				printf("Nie je k dispozicii upravena sprava\n");
 			}
 		}
-		
-		
+
 		/*treba premysliet ako urobit tuto cast, potrebujes si do jedneho pola ulozit vzdy dlzu daneho slova, a do druheho pola si uloz dane slovo (pridi ako na to) */
 		else if (prikaz == 'd')
 		{
 			int k;
 			scanf("%d", &k);
-			
 			
 			printf("%d\n", k);
 		}
@@ -151,6 +142,50 @@ int main()
 
 	return 0;	
 }
+
+
+
+
+int PocetSlovNacitanych (FILE *Subor)
+{
+	int znak;
+	int pocet_slov = 1;
+	
+	Subor = fopen("sifra.txt", "r");
+	while ((znak = getc(Subor)) != EOF)
+	{
+		if (znak == ' ')
+		{
+			pocet_slov++;
+		}
+	}
+	fclose(Subor);
+	return pocet_slov;
+
+}
+
+int PocetZnakovSuboru (FILE *subor)
+{
+	int pocet_znakov = 0;
+	subor = fopen("sifra.txt", "r");
+	while (getc(subor) != EOF)
+	{
+		pocet_znakov++;		
+	}
+	
+	if (pocet_znakov > 1000)
+	{
+		pocet_znakov = 1000;
+	}
+	else if (pocet_znakov < 1000)
+	{
+		pocet_znakov = pocet_znakov;
+	}
+	
+	fclose(subor);
+	return pocet_znakov;
+}
+
 
 /*toto je funkcia prikazn vykonava veci po stlaceni n-ka */
 void prikazn (FILE *w, int prvy_text[0], int pocet_znakov, int *nacitane_nko)
@@ -178,6 +213,6 @@ void prikazn (FILE *w, int prvy_text[0], int pocet_znakov, int *nacitane_nko)
 		}
 		*nacitane_nko = 1;
 	}
-
+	fclose(w);
 }
 
