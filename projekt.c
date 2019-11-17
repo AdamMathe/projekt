@@ -5,16 +5,19 @@
 /*funkcia returnuje pocet znakov v subore */
 int PocetZnakovSuboru (FILE *subor);
 
-void prikazn (FILE *w, int prvy_text[0], int pocet_znakov, int *nacitane_nko);
+void nacitanie (FILE *w, int povodny_text[], int pocet_znakov, int *nacitane_nko);
+
+void vypis (int povodny_text[], int pocet_znakov, int *nacitane_nko);
+
+
+void danadlzka (int povodny_text[], int pocet_znakov, int *nacitane_nko);
 
 /*funkcia returnuje pocet nacitanych slov v subore */
 int PocetSlovNacitanych (FILE *Subor);
 
 
 int main()
-{
-	int vstup;
-	
+{	
 	int c, i, m, j = 0, prikaz;
 	int k = 1;
 	/*deklaracia pravdivostnej hodnoty ci je n-ko nacitane - po vykonani prikazn sa zmeni na 1 */
@@ -22,7 +25,7 @@ int main()
 	/*deklaracia pravdivostnej hodnoty ci je u-cko nacitane - po vykonani prikazu sa zmeni na 1 */
 	int nacitane_ucko = 0;
 	int pismeno = 0;
-	
+	int vstup;
 	
 	FILE *fr;
 	
@@ -30,46 +33,30 @@ int main()
 	
 	printf("Pocet slov nacitanych: %d", PocetSlovNacitanych(fr));
 	
+	
 		
-	/*deklaracia pola povodnytext s poctom prvkov ktory sa rovna poctu znakov v citanom subore */
+	/*deklaracia pola povodnytext s poctom prvkov ktory sa rovna poctu znakov v  subore */
 	int povodny_text[PocetZnakovSuboru(fr)];
 	int upraveny_text[PocetZnakovSuboru(fr)];
 	
 	/*toto bude loop ktory bude neustale pytat vstup od pouzivatela kym k = 1. Pri stlaceni gombiku na ukoncenie programu sa tento loop porusi (napr k bude rovne nule, vide sa z neho a program sa skonci) */
-	while (k == 1)
-	{		
-		/*tento scanf pyta vstup */
-		scanf("%c", &prikaz);
-		
-		/*Vetvenie pre nacitanie sifrovanej spravy do pola */
-		if(prikaz == 'n')
+	while ((vstup = getchar()) != 'k')
+	{	
+		switch(vstup)
 		{
 			/*funkia prikazn - pyta si 4 argumenty - prvy je subor z ktoreho cita, druhym je adresa na ktoru zapise prvy znak zo subora, tretim je pocet_znakov ktore sa nachadzaju v subore, stvrtym je adresa premennej nacitane_nko 
 			- kedze potrebujem zmenit v behu funkcie jej hodnotu podla toho ktora vetva sa vykona - a v deklaracii funkcie prikazn je zasa nacitane_nko spravovane ako pointer vsade*/
-			prikazn(fr, &povodny_text[0], PocetZnakovSuboru(fr), &nacitane_nko);
-		}
-		
-		
-		/*Toto je vetvenie pre pripad ze uzivatel stlaci na klavesnici pismeno v */
-		else if(prikaz == 'v')
-		{
+			case 'n' : nacitanie(fr, &povodny_text[0], PocetZnakovSuboru(fr), &nacitane_nko); break;
+			
 			/*tento prikaz if zistuje ci pred stlacenim pismena v (vypisom znakov) bolo stlacene najprv tlacidlo n (nacitanie znakov). ak ano, premennej nacitane_nko nastavilo hodnotu 1. na tomto principe som vyhodnotil ze ich
 			moze vypisat. ak nebolo nacitane tak prevedie else vetvu tuto - respektive vyprintuje - sprava nie je nacitana a odsadi riadok  */
-			if (nacitane_nko == 1)
-			{
-				for (i = 0; i < PocetZnakovSuboru(fr); i++)
-				{
-					printf("%c", povodny_text[i]);
-				}
-				printf("\n");
-			}
-			else
-			{
-				printf("Sprava nie je nacitana\n");	
-			}	
+			case 'v' : vypis(&povodny_text[0], PocetZnakovSuboru(fr), &nacitane_nko); break;
+			
+			case 'd' : danadlzka (&povodny_text[0], PocetZnakovSuboru(fr), &nacitane_nko); break;
 		}
+
 		/*vetvenie pre pripad ked sa na klavesnici stlaci pismeno u */
-		else if(prikaz == 'u')
+		if(vstup == 'u')
 		{
 			for (i = 0; i < PocetZnakovSuboru(fr); i++)
 			{
@@ -99,10 +86,11 @@ int main()
 			{
 				printf("Sprava nie je nacitana\n");	
 			}
+			else
 			nacitane_ucko = 1;		
 		}
 		/*vetvenie pre pripad ze sa na klavesnici stlaci pismeno s */
-		else if(prikaz == 's')
+		else if(vstup == 's')
 		{
 			/*pomocou premennych nacitane_ucko a nacitane_nko zistuje ci prebehlo aj zadanie nka na nacitanie prvotnej spravy a taktiez aj uprava textu - len ked su tieto veci splnene mozme vypisat upraveneho textu */
 			if(nacitane_ucko == 1 && nacitane_nko == 1)
@@ -124,20 +112,6 @@ int main()
 			}
 		}
 
-		/*treba premysliet ako urobit tuto cast, potrebujes si do jedneho pola ulozit vzdy dlzu daneho slova, a do druheho pola si uloz dane slovo (pridi ako na to) */
-		else if (prikaz == 'd')
-		{
-			int k;
-			scanf("%d", &k);
-			
-			printf("%d\n", k);
-		}
-		
-		/*stlacenie pismena k ukonci while loop a skonci program (while loop sa uz viac nebude rovnat jednej, podmienka nebude splnena a opusti sa) */
-		else if (prikaz == 'k')
-		{
-			k = 0;	
-		}	
 	}	
 
 	return 0;	
@@ -188,7 +162,7 @@ int PocetZnakovSuboru (FILE *subor)
 
 
 /*toto je funkcia prikazn vykonava veci po stlaceni n-ka */
-void prikazn (FILE *w, int prvy_text[0], int pocet_znakov, int *nacitane_nko)
+void nacitanie (FILE *w, int povodny_text[], int pocet_znakov, int *nacitane_nko)
 {
 	int i;
 	
@@ -209,10 +183,79 @@ void prikazn (FILE *w, int prvy_text[0], int pocet_znakov, int *nacitane_nko)
 		/*for loop ktory mi do pola povodny_text(v tejto funkcii ako prvy_text) ulozi vsetky znaky zo suboru sifra.txt */
 		for (i = 0; i < pocet_znakov; i++)
 		{
-			prvy_text[i] = getc(w);
+			povodny_text[i] = getc(w);
 		}
 		*nacitane_nko = 1;
 	}
 	fclose(w);
 }
 
+void vypis (int povodny_text[], int pocet_znakov, int *nacitane_nko)
+{
+	int i;
+	
+	/*tento prikaz if zistuje ci pred stlacenim pismena v (vypisom znakov) bolo stlacene najprv tlacidlo n (nacitanie znakov). ak ano, premennej nacitane_nko nastavilo hodnotu 1. na tomto principe som vyhodnotil ze ich
+	moze vypisat. ak nebolo nacitane tak prevedie else vetvu tuto - respektive vyprintuje - sprava nie je nacitana a odsadi riadok  */
+	if (*nacitane_nko == 1)
+	{
+		for (i = 0; i < pocet_znakov; i++)
+		{
+			printf("%c", povodny_text[i]);
+		}
+			printf("\n");
+		}
+	else
+	{
+		printf("Sprava nie je nacitana\n");	
+	}	
+}
+
+void danadlzka (int povodny_text[], int pocet_znakov, int *nacitane_nko)
+{
+	int pismeno = 0;
+	int i;
+	int j;
+	int k;
+	
+	
+	if (*nacitane_nko == 0)
+	{
+		printf("Sprava nie je nacitana\n");
+	}
+	
+	else if (*nacitane_nko == 1)
+	{
+		scanf("%d", &k);
+		
+		if (k >= 1 && k <= 100)
+		{
+			for (i = 0; i < pocet_znakov; i++)
+			{
+				if (povodny_text[i] != ' ')
+				{
+					pismeno++;
+				}
+				else if (povodny_text[i] == ' ')
+				{
+					if (pismeno == k)
+					{
+						for (j = i - k; j < i; j++)
+						{
+							printf("%c", povodny_text[j]);
+						}
+						printf("\n");
+						pismeno = 0;
+					}
+					else
+					{
+						pismeno = 0;
+					}
+				}
+			}
+		}
+		else
+		{
+			printf("Kcko nie je v intervale <0,100>\n");
+		}
+	}
+}
