@@ -18,8 +18,7 @@ int PocetSlovNacitanych (FILE *Subor);
 
 int main()
 {	
-	int c, i, m, j = 0, prikaz;
-	int k = 1;
+	int i, m, j = 0;
 	/*deklaracia pravdivostnej hodnoty ci je n-ko nacitane - po vykonani prikazn sa zmeni na 1 */
 	int nacitane_nko = 0;
 	/*deklaracia pravdivostnej hodnoty ci je u-cko nacitane - po vykonani prikazu sa zmeni na 1 */
@@ -29,17 +28,15 @@ int main()
 	
 	FILE *fr;
 	
-	fr = fopen("sifra.txt", "r");
-	
 	printf("Pocet slov nacitanych: %d", PocetSlovNacitanych(fr));
 	
 	
-		
+	
 	/*deklaracia pola povodnytext s poctom prvkov ktory sa rovna poctu znakov v  subore */
 	int povodny_text[PocetZnakovSuboru(fr)];
 	int upraveny_text[PocetZnakovSuboru(fr)];
 	
-	/*toto bude loop ktory bude neustale pytat vstup od pouzivatela kym k = 1. Pri stlaceni gombiku na ukoncenie programu sa tento loop porusi (napr k bude rovne nule, vide sa z neho a program sa skonci) */
+
 	while ((vstup = getchar()) != 'k')
 	{	
 		switch(vstup)
@@ -111,12 +108,9 @@ int main()
 				printf("Nie je k dispozicii upravena sprava\n");
 			}
 		}
-
 	}	
-
 	return 0;	
 }
-
 
 
 
@@ -169,7 +163,6 @@ void nacitanie (FILE *w, int povodny_text[], int pocet_znakov, int *nacitane_nko
 	/*kedze toto cele je obalene vo while k == 1 loope, moze sa stlacit nko viackrat a skusat citat viackrat zo suboru - to znaci ze druhe tretie, ... citanie by uz bol prejdeny subor - vzdy ho teda musim zavriet
 	a znovu otvorit */
 	/*v prvom rade zavrie predosly dokument z ktoreho sa citalo predtym na zistenie poctu znakov - a nasledne ho znovu otvoru na citanie */
-	fclose(w);
 	w = fopen("sifra.txt", "r");
 	
 	/*Vetvenie pre pripad kedy sa spravu nepodari nacitatkedze nevedelo precitat dany subor */
@@ -209,6 +202,7 @@ void vypis (int povodny_text[], int pocet_znakov, int *nacitane_nko)
 		printf("Sprava nie je nacitana\n");	
 	}	
 }
+
 
 void danadlzka (int povodny_text[], int pocet_znakov, int *nacitane_nko)
 {
