@@ -13,6 +13,8 @@ void uprava (int povodny_text[], int pocet_znakov, int upraveny_text[], int *nac
 
 int pocet_upravenych (int povodny_text[], int pocet_znakov);
 
+void vypis_upravenych (int upraveny_text[], int pocet_upravenych, int *nacitane_nko, int *nacitane_ucko);
+
 void danadlzka (int povodny_text[], int pocet_znakov, int *nacitane_nko);
 
 void sifra(int upraveny_text[], int pocet_upravenych_znakov, int *nacitane_ucko);
@@ -54,34 +56,13 @@ int main()
 			
 			case 'u' : uprava(povodny_text, PocetZnakovSuboru(fr), upraveny_text, &nacitane_nko, &nacitane_ucko); break;
 			
+			case 's' : vypis_upravenych (upraveny_text, pocet_upravenych(povodny_text, PocetZnakovSuboru(fr)), &nacitane_nko, &nacitane_ucko); break;
+			
 			case 'd' : danadlzka (povodny_text, PocetZnakovSuboru(fr), &nacitane_nko); break;
 			
 			case 'c' : sifra(upraveny_text, pocet_upravenych(povodny_text, PocetZnakovSuboru(fr)), &nacitane_ucko); break;
 		}
 
-
-		/*vetvenie pre pripad ze sa na klavesnici stlaci pismeno s */
-		if(vstup == 's')
-		{
-			/*pomocou premennych nacitane_ucko a nacitane_nko zistuje ci prebehlo aj zadanie nka na nacitanie prvotnej spravy a taktiez aj uprava textu - len ked su tieto veci splnene mozme vypisat upraveneho textu */
-			if(nacitane_ucko == 1 && nacitane_nko == 1)
-			{	
-				/*vyprintuje upraveny text, a to tolko krat, kolko je ulozenych upravenych symbolov v poli upraveny_text. */
-				for (m = 0; m < (pocet_upravenych (povodny_text, PocetZnakovSuboru(fr))); m++)
-				{
-					printf("%c", upraveny_text[m]);
-					/*tento if skontroluje ci su vylacene uz vsetky prvky z upraveneho pola, a ak uz ano, vyprintuje znak noveho riadku */
-					if(m == (pocet_upravenych(povodny_text, PocetZnakovSuboru(fr)) - 1))
-					{
-						printf("\n");
-					}
-				}
-			}
-			else if (nacitane_ucko == 0 || nacitane_nko == 0)
-			{
-				printf("Nie je k dispozicii upravena sprava\n");
-			}
-		}
 	}	
 	return 0;	
 }
@@ -230,6 +211,32 @@ int pocet_upravenych (int povodny_text[], int pocet_znakov)
 	}
 	return pocetupravenych;
 }
+
+void vypis_upravenych (int upraveny_text[], int pocet_upravenych, int *nacitane_nko, int *nacitane_ucko)
+{
+	int m;
+	
+	/*pomocou premennych nacitane_ucko a nacitane_nko zistuje ci prebehlo aj zadanie nka na nacitanie prvotnej spravy a taktiez aj uprava textu - len ked su tieto veci splnene mozme vypisat upraveneho textu */
+	if(*nacitane_ucko == 1 && *nacitane_nko == 1)
+	{	
+		/*vyprintuje upraveny text, a to tolko krat, kolko je ulozenych upravenych symbolov v poli upraveny_text. */
+		for (m = 0; m < pocet_upravenych; m++)
+		{
+			printf("%c", upraveny_text[m]);
+			/*tento if skontroluje ci su vylacene uz vsetky prvky z upraveneho pola, a ak uz ano, vyprintuje znak noveho riadku */
+			if(m == (pocet_upravenych - 1))
+			{
+				printf("\n");
+			}
+		}
+	}
+	else if (*nacitane_ucko == 0 || *nacitane_nko == 0)
+	{
+		printf("Nie je k dispozicii upravena sprava\n");
+	}
+	
+}
+
 
 void danadlzka (int povodny_text[], int pocet_znakov, int *nacitane_nko)
 {
