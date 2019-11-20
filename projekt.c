@@ -25,14 +25,12 @@ int main()
 	int nacitane_nko = 0;
 	/*deklaracia pravdivostnej hodnoty ci je u-cko nacitane - po vykonani prikazu sa zmeni na 1 */
 	int nacitane_ucko = 0;
-	int pismeno = 0;
+
 	int vstup;
 	
 	FILE *fr;
 	
 	/*printf("Pocet slov nacitanych: %d", PocetSlovNacitanych(fr));*/
-	
-	
 	
 	/*deklaracia pola povodnytext s poctom prvkov ktory sa rovna poctu znakov v  subore */
 	int povodny_text[PocetZnakovSuboru(fr)];
@@ -45,13 +43,15 @@ int main()
 		{
 			/*funkia prikazn - pyta si 4 argumenty - prvy je subor z ktoreho cita, druhym je adresa na ktoru zapise prvy znak zo subora, tretim je pocet_znakov ktore sa nachadzaju v subore, stvrtym je adresa premennej nacitane_nko 
 			- kedze potrebujem zmenit v behu funkcie jej hodnotu podla toho ktora vetva sa vykona - a v deklaracii funkcie prikazn je zasa nacitane_nko spravovane ako pointer vsade*/
-			case 'n' : nacitanie(fr, &povodny_text[0], PocetZnakovSuboru(fr), &nacitane_nko); break;
+			case 'n' : nacitanie(fr, povodny_text, PocetZnakovSuboru(fr), &nacitane_nko); break;
 			
 			/*tento prikaz if zistuje ci pred stlacenim pismena v (vypisom znakov) bolo stlacene najprv tlacidlo n (nacitanie znakov). ak ano, premennej nacitane_nko nastavilo hodnotu 1. na tomto principe som vyhodnotil ze ich
 			moze vypisat. ak nebolo nacitane tak prevedie else vetvu tuto - respektive vyprintuje - sprava nie je nacitana a odsadi riadok  */
-			case 'v' : vypis(&povodny_text[0], PocetZnakovSuboru(fr), &nacitane_nko); break;
+			case 'v' : vypis(povodny_text, PocetZnakovSuboru(fr), &nacitane_nko); break;
 			
-			case 'd' : danadlzka (&povodny_text[0], PocetZnakovSuboru(fr), &nacitane_nko); break;
+			case 'd' : danadlzka (povodny_text, PocetZnakovSuboru(fr), &nacitane_nko); break;
+			
+			case 'c' : sifra(upraveny_text, j, &nacitane_ucko); break;
 		}
 
 		/*vetvenie pre pripad ked sa na klavesnici stlaci pismeno u */
@@ -109,10 +109,6 @@ int main()
 			{
 				printf("Nie je k dispozicii upravena sprava\n");
 			}
-		}
-		else if (vstup == 'c')
-		{
-			sifra(&upraveny_text[0], j, &nacitane_ucko);
 		}
 	}	
 	return 0;	
