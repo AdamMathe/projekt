@@ -1,7 +1,6 @@
 
 #include <stdio.h>
 
-
 /*funkcia returnuje pocet znakov v subore */
 int PocetZnakovSuboru (FILE *subor);
 
@@ -25,7 +24,6 @@ int PocetSlovNacitanych (FILE *Subor);
 
 int main()
 {	
-	int i, m;
 	/*deklaracia pravdivostnej hodnoty ci je n-ko nacitane - po vykonani prikazn sa zmeni na 1 */
 	int nacitane_nko = 0;
 	/*deklaracia pravdivostnej hodnoty ci je u-cko nacitane - po vykonani prikazu sa zmeni na 1 */
@@ -41,7 +39,6 @@ int main()
 	int povodny_text[PocetZnakovSuboru(fr)];
 	int upraveny_text[PocetZnakovSuboru(fr)];
 	
-
 	while ((vstup = getchar()) != 'k')
 	{	
 		switch(vstup)
@@ -62,7 +59,6 @@ int main()
 			
 			case 'c' : sifra(upraveny_text, pocet_upravenych(povodny_text, PocetZnakovSuboru(fr)), &nacitane_ucko); break;
 		}
-
 	}	
 	return 0;	
 }
@@ -82,7 +78,6 @@ int PocetSlovNacitanych (FILE *Subor)
 	}
 	fclose(Subor);
 	return pocet_slov;
-
 }
 
 int PocetZnakovSuboru (FILE *subor)
@@ -107,17 +102,12 @@ int PocetZnakovSuboru (FILE *subor)
 	return pocet_znakov;
 }
 
-/*toto je funkcia prikazn vykonava veci po stlaceni n-ka */
 void nacitanie (FILE *w, int povodny_text[], int pocet_znakov, int *nacitane_nko)
 {
 	int i;
 	
-	/*kedze toto cele je obalene vo while k == 1 loope, moze sa stlacit nko viackrat a skusat citat viackrat zo suboru - to znaci ze druhe tretie, ... citanie by uz bol prejdeny subor - vzdy ho teda musim zavriet
-	a znovu otvorit */
-	/*v prvom rade zavrie predosly dokument z ktoreho sa citalo predtym na zistenie poctu znakov - a nasledne ho znovu otvoru na citanie */
 	w = fopen("sifra.txt", "r");
 	
-	/*Vetvenie pre pripad kedy sa spravu nepodari nacitatkedze nevedelo precitat dany subor */
 	if (w == NULL)
 	{
 		printf("Spravu sa nepodarilo nacitat\n");
@@ -125,7 +115,6 @@ void nacitanie (FILE *w, int povodny_text[], int pocet_znakov, int *nacitane_nko
 	}
 	else
 	{
-		/*for loop ktory mi do pola povodny_text(v tejto funkcii ako prvy_text) ulozi vsetky znaky zo suboru sifra.txt */
 		for (i = 0; i < pocet_znakov; i++)
 		{
 			povodny_text[i] = getc(w);
@@ -139,8 +128,6 @@ void vypis (int povodny_text[], int pocet_znakov, int *nacitane_nko)
 {
 	int i;
 	
-	/*tento prikaz if zistuje ci pred stlacenim pismena v (vypisom znakov) bolo stlacene najprv tlacidlo n (nacitanie znakov). ak ano, premennej nacitane_nko nastavilo hodnotu 1. na tomto principe som vyhodnotil ze ich
-	moze vypisat. ak nebolo nacitane tak prevedie else vetvu tuto - respektive vyprintuje - sprava nie je nacitana a odsadi riadok  */
 	if (*nacitane_nko == 1)
 	{
 		for (i = 0; i < pocet_znakov; i++)
@@ -185,14 +172,8 @@ void uprava (int povodny_text[], int pocet_znakov, int upraveny_text[], int *nac
 			{
 				upraveny_text[pocet_upravenych] = povodny_text[i];
 			}
-			/*printf("%c", upraveny_text[j]);*/
 			pocet_upravenych++;
-			}
-			/*toto je vetvenie ktore urobi novy riadok ked sa vlastne skonci kopirovanie posledneho dobreho znaku do noveho pola 
-			else if(i == pocet_znakov - 1)
-			{
-				printf("\n");
-			}*/
+		}
 	}
 }
 
@@ -234,7 +215,6 @@ void vypis_upravenych (int upraveny_text[], int pocet_upravenych, int *nacitane_
 	{
 		printf("Nie je k dispozicii upravena sprava\n");
 	}
-	
 }
 
 
@@ -244,7 +224,6 @@ void danadlzka (int povodny_text[], int pocet_znakov, int *nacitane_nko)
 	int i;
 	int j;
 	int k;
-	
 	
 	if (*nacitane_nko == 0)
 	{
