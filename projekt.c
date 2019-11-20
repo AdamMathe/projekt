@@ -95,7 +95,7 @@ int PocetZnakovSuboru (FILE *subor)
 	}
 	else if (pocet_znakov < 1000)
 	{
-		pocet_znakov = pocet_znakov;
+		pocet_znakov = pocet_znakov + 1;
 	}
 	
 	fclose(subor);
@@ -115,10 +115,11 @@ void nacitanie (FILE *w, int povodny_text[], int pocet_znakov, int *nacitane_nko
 	}
 	else
 	{
-		for (i = 0; i < pocet_znakov; i++)
+		for (i = 0; i < pocet_znakov - 1; i++)
 		{
 			povodny_text[i] = getc(w);
 		}
+		povodny_text[i] = '\0';
 		*nacitane_nko = 1;
 	}
 	fclose(w);
@@ -130,10 +131,11 @@ void vypis (int povodny_text[], int pocet_znakov, int *nacitane_nko)
 	
 	if (*nacitane_nko == 1)
 	{
-		for (i = 0; i < pocet_znakov; i++)
+		for (i = 0; i < pocet_znakov - 1; i++)
 		{
 			printf("%c", povodny_text[i]);
 		}
+		printf("%c", povodny_text[i]);
 		printf("\n");
 	}
 	else
@@ -236,7 +238,7 @@ void danadlzka (int povodny_text[], int pocet_znakov, int *nacitane_nko)
 		
 		if (k >= 1 && k <= 100)
 		{
-			for (i = 0; i < pocet_znakov; i++)
+			for (i = 0; i < pocet_znakov - 1; i++)
 			{
 				if (povodny_text[i] != ' ')
 				{
@@ -258,12 +260,25 @@ void danadlzka (int povodny_text[], int pocet_znakov, int *nacitane_nko)
 						pismeno = 0;
 					}
 				}
+		
 			}
+
 		}
 		else
 		{
 			printf("Kcko nie je v intervale <0,100>\n");
 		}
+	}
+	if ((povodny_text[i] == '\0') && (pismeno == k))
+	{
+		/*printf("Je to znak lomitko nula\n");
+		printf("Pismena naratane este trz: %d\n", pismeno);*/
+		for (j = (i) - k; j < (i); j++)
+		{
+			printf("%c", povodny_text[j]);
+		}
+		printf("\n");
+		pismeno = 0;
 	}
 }
 
