@@ -9,6 +9,9 @@ void nacitanie (FILE *w, int povodny_text[], int pocet_znakov, int *nacitane_nko
 
 void vypis (int povodny_text[], int pocet_znakov, int *nacitane_nko);
 
+void uprava (int povodny_text[], int pocet_znakov, int upraveny_text[], int *nacitane_nko, int *nacitane_ucko);
+
+int pocet_upravenych (int povodny_text[], int pocet_znakov);
 
 void danadlzka (int povodny_text[], int pocet_znakov, int *nacitane_nko);
 
@@ -20,7 +23,7 @@ int PocetSlovNacitanych (FILE *Subor);
 
 int main()
 {	
-	int i, m, j = 0;
+	int i, m;
 	/*deklaracia pravdivostnej hodnoty ci je n-ko nacitane - po vykonani prikazn sa zmeni na 1 */
 	int nacitane_nko = 0;
 	/*deklaracia pravdivostnej hodnoty ci je u-cko nacitane - po vykonani prikazu sa zmeni na 1 */
@@ -49,57 +52,26 @@ int main()
 			moze vypisat. ak nebolo nacitane tak prevedie else vetvu tuto - respektive vyprintuje - sprava nie je nacitana a odsadi riadok  */
 			case 'v' : vypis(povodny_text, PocetZnakovSuboru(fr), &nacitane_nko); break;
 			
+			case 'u' : uprava(povodny_text, PocetZnakovSuboru(fr), upraveny_text, &nacitane_nko, &nacitane_ucko); break;
+			
 			case 'd' : danadlzka (povodny_text, PocetZnakovSuboru(fr), &nacitane_nko); break;
 			
-			case 'c' : sifra(upraveny_text, j, &nacitane_ucko); break;
+			case 'c' : sifra(upraveny_text, pocet_upravenych(povodny_text, PocetZnakovSuboru(fr)), &nacitane_ucko); break;
 		}
 
-		/*vetvenie pre pripad ked sa na klavesnici stlaci pismeno u */
-		if(vstup == 'u')
-		{
-			for (i = 0; i < PocetZnakovSuboru(fr); i++)
-			{
-				/*vetvenie, ktore sleduje ci znak precitany z pola povodny_text je bud velke alebo male pismeno */
-				if ((((povodny_text[i] >= 'A') && (povodny_text[i] <= 'Z')) || ((povodny_text[i] >= 'a') && (povodny_text[i] <= 'z'))) && nacitane_nko == 1)
-				{
-					/*znak ktory sa tu hore v if-e zisti ze je male/velke pismeno sa nasledne konvertuje na velke pismeno a nasledne dany znakl uklada do pola upraveny_text */
-					if (povodny_text[i] >= 'a' && povodny_text[i] <= 'z')
-					{
-						upraveny_text[j] = povodny_text[i] - 32;
-					}
-					/*vetvenie pre ostatne znaky ktore nesedia do intervalu malych pismen (ale kedze cez matersky if presli len velke a male pismena, tak logicky su ako doplnok uz len tie velke pismena) */
-					else
-					{
-						upraveny_text[j] = povodny_text[i];
-					}
-					/*printf("%c", upraveny_text[j]);*/
-					j++;
-				}
-				/*toto je vetvenie ktore urobi novy riadok ked sa vlastne skonci kopirovanie posledneho dobreho znaku do noveho pola 
-				else if(i == pocet_znakov - 1)
-				{
-					printf("\n");
-				}*/
-			}
-			if(nacitane_nko == 0)
-			{
-				printf("Sprava nie je nacitana\n");	
-			}
-			else
-			nacitane_ucko = 1;		
-		}
+
 		/*vetvenie pre pripad ze sa na klavesnici stlaci pismeno s */
-		else if(vstup == 's')
+		if(vstup == 's')
 		{
 			/*pomocou premennych nacitane_ucko a nacitane_nko zistuje ci prebehlo aj zadanie nka na nacitanie prvotnej spravy a taktiez aj uprava textu - len ked su tieto veci splnene mozme vypisat upraveneho textu */
 			if(nacitane_ucko == 1 && nacitane_nko == 1)
 			{	
 				/*vyprintuje upraveny text, a to tolko krat, kolko je ulozenych upravenych symbolov v poli upraveny_text. */
-				for (m = 0; m < j; m++)
+				for (m = 0; m < (pocet_upravenych (povodny_text, PocetZnakovSuboru(fr))); m++)
 				{
 					printf("%c", upraveny_text[m]);
 					/*tento if skontroluje ci su vylacene uz vsetky prvky z upraveneho pola, a ak uz ano, vyprintuje znak noveho riadku */
-					if(m == j - 1)
+					if(m == (pocet_upravenych(povodny_text, PocetZnakovSuboru(fr)) - 1))
 					{
 						printf("\n");
 					}
@@ -113,8 +85,6 @@ int main()
 	}	
 	return 0;	
 }
-
-
 
 int PocetSlovNacitanych (FILE *Subor)
 {
@@ -156,7 +126,6 @@ int PocetZnakovSuboru (FILE *subor)
 	return pocet_znakov;
 }
 
-
 /*toto je funkcia prikazn vykonava veci po stlaceni n-ka */
 void nacitanie (FILE *w, int povodny_text[], int pocet_znakov, int *nacitane_nko)
 {
@@ -197,14 +166,70 @@ void vypis (int povodny_text[], int pocet_znakov, int *nacitane_nko)
 		{
 			printf("%c", povodny_text[i]);
 		}
-			printf("\n");
-		}
+		printf("\n");
+	}
 	else
 	{
 		printf("Sprava nie je nacitana\n");	
 	}	
 }
 
+void uprava (int povodny_text[], int pocet_znakov, int upraveny_text[], int *nacitane_nko, int *nacitane_ucko)
+{
+	int pocet_upravenych = 0;
+	int i;
+	
+	if(*nacitane_nko == 0)
+	{
+		printf("Sprava nie je nacitana\n");	
+	}
+	
+	else
+	{
+		*nacitane_ucko = 1;			
+	}
+	
+	for (i = 0; i < pocet_znakov; i++)
+	{
+		/*vetvenie, ktore sleduje ci znak precitany z pola povodny_text je bud velke alebo male pismeno */
+		if ((((povodny_text[i] >= 'A') && (povodny_text[i] <= 'Z')) || ((povodny_text[i] >= 'a') && (povodny_text[i] <= 'z'))) && *nacitane_nko == 1)
+		{
+			/*znak ktory sa tu hore v if-e zisti ze je male/velke pismeno sa nasledne konvertuje na velke pismeno a nasledne dany znakl uklada do pola upraveny_text */
+			if (povodny_text[i] >= 'a' && povodny_text[i] <= 'z')
+			{
+				upraveny_text[pocet_upravenych] = povodny_text[i] - 32;
+			}
+			/*vetvenie pre ostatne znaky ktore nesedia do intervalu malych pismen (ale kedze cez matersky if presli len velke a male pismena, tak logicky su ako doplnok uz len tie velke pismena) */
+			else
+			{
+				upraveny_text[pocet_upravenych] = povodny_text[i];
+			}
+			/*printf("%c", upraveny_text[j]);*/
+			pocet_upravenych++;
+			}
+			/*toto je vetvenie ktore urobi novy riadok ked sa vlastne skonci kopirovanie posledneho dobreho znaku do noveho pola 
+			else if(i == pocet_znakov - 1)
+			{
+				printf("\n");
+			}*/
+	}
+}
+
+int pocet_upravenych (int povodny_text[], int pocet_znakov)
+{
+	int pocetupravenych = 0;
+	int i;
+	
+	for (i = 0; i < pocet_znakov; i++)
+	{
+		/*vetvenie, ktore sleduje ci znak precitany z pola povodny_text je bud velke alebo male pismeno */
+		if (((povodny_text[i] >= 'A') && (povodny_text[i] <= 'Z')) || ((povodny_text[i] >= 'a') && (povodny_text[i] <= 'z')))
+		{
+			pocetupravenych++;
+		}
+	}
+	return pocetupravenych;
+}
 
 void danadlzka (int povodny_text[], int pocet_znakov, int *nacitane_nko)
 {
