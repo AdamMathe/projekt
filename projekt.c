@@ -12,6 +12,8 @@ void vypis (int povodny_text[], int pocet_znakov, int *nacitane_nko);
 
 void danadlzka (int povodny_text[], int pocet_znakov, int *nacitane_nko);
 
+void sifra(int upraveny_text[], int pocet_upravenych_znakov, int *nacitane_ucko);
+
 /*funkcia returnuje pocet nacitanych slov v subore */
 int PocetSlovNacitanych (FILE *Subor);
 
@@ -28,7 +30,7 @@ int main()
 	
 	FILE *fr;
 	
-	printf("Pocet slov nacitanych: %d", PocetSlovNacitanych(fr));
+	/*printf("Pocet slov nacitanych: %d", PocetSlovNacitanych(fr));*/
 	
 	
 	
@@ -107,6 +109,10 @@ int main()
 			{
 				printf("Nie je k dispozicii upravena sprava\n");
 			}
+		}
+		else if (vstup == 'c')
+		{
+			sifra(&upraveny_text[0], j, &nacitane_ucko);
 		}
 	}	
 	return 0;	
@@ -250,6 +256,42 @@ void danadlzka (int povodny_text[], int pocet_znakov, int *nacitane_nko)
 		else
 		{
 			printf("Kcko nie je v intervale <0,100>\n");
+		}
+	}
+}
+
+void sifra(int upraveny_text[], int pocet_upravenych_znakov, int *nacitane_ucko)
+{
+	int i, n;
+	
+	if (*nacitane_ucko != 1)
+	{
+		printf("Nie je k dispozicii upravena sprava\n");
+	}
+	else
+	{
+		scanf("%d", &n);
+		
+		if (n >= 1 && n <= 25)
+		{
+			for (i = 0; i < pocet_upravenych_znakov; i++)
+			{
+				/*Toto je vetva kedy pri minuse neprechadza na koniec abecedy */
+				if (((upraveny_text[i]) - n) >= 65)
+				{
+					printf("%c", upraveny_text[i] - n);
+				}	
+				/*Toto je vetvenie kedy prechadza na zaciatok abecedy */
+				else if (((upraveny_text[i]) - n) < 65)
+				{
+					printf("%c", ('Z' - 'A') + upraveny_text[i] - n + 1);
+				}
+			}
+			printf("\n");
+		}
+		else
+		{
+			printf("Zadane n-ko nie je z intervalu <1,25>\n");
 		}
 	}
 }
