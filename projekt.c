@@ -16,6 +16,8 @@ void vypis_upravenych (int upraveny_text[], int pocet_upravenych, int *nacitane_
 
 void danadlzka (int povodny_text[], int pocet_znakov, int *nacitane_nko);
 
+void histogram (int upraveny_text[], int pocet_upravenych_znakov, int *nacitane_ucko);
+
 void sifra(int upraveny_text[], int pocet_upravenych_znakov, int *nacitane_ucko);
 
 /*funkcia returnuje pocet nacitanych slov v subore */
@@ -56,6 +58,8 @@ int main()
 			case 's' : vypis_upravenych (upraveny_text, pocet_upravenych(povodny_text, PocetZnakovSuboru(fr)), &nacitane_nko, &nacitane_ucko); break;
 			
 			case 'd' : danadlzka (povodny_text, PocetZnakovSuboru(fr), &nacitane_nko); break;
+			
+			case 'h' : histogram (upraveny_text, pocet_upravenych(povodny_text, PocetZnakovSuboru(fr)), &nacitane_ucko); break;
 			
 			case 'c' : sifra(upraveny_text, pocet_upravenych(povodny_text, PocetZnakovSuboru(fr)), &nacitane_ucko); break;
 		}
@@ -280,6 +284,130 @@ void danadlzka (int povodny_text[], int pocet_znakov, int *nacitane_nko)
 		printf("\n");
 		pismeno = 0;
 	}
+}
+
+
+void histogram (int upraveny_text[], int pocet_upravenych_znakov, int *nacitane_ucko)
+{
+	
+	int stlpec, riadok;
+	int i = 0, j = 0;
+	int max = 0;
+	
+	/*deklaracia pola hist s velkostou abecedy (26 pismen) */
+	double hist[26];
+	
+	if (*nacitane_ucko == 0)
+	{
+		printf("Nie je k dispozicii upravena sprava.\n");
+	}
+	
+	else if (*nacitane_ucko == 1)
+	{
+		/*vynulovalo mi pole hist s dlzkou 26 na nulu */
+		for (j = 0; j < 26; j++)
+		{
+			hist[j] = 0;
+		}
+		
+		/*vonkajsi for loop prechadza cez vsetky znaky v subore. vnutorny for loop prechadza cez vsetky pismena abecedy - a ak sa znak precitany v subore rovna nejakemu pismenu v abecede, zvysi prislusny index pola hist o 1 */
+		for (i = 0; i < pocet_upravenych_znakov; i++)
+		{
+			/*vnutorny for loop prechadza cez vsetky pismena abecedy - a ak sa znak precitany v subore rovna nejakemu pismenu v abecede, zvysi prislusny index pola hist o 1 */
+			for (j = 0; j < 26; j++)
+			{
+				/* ak sa znak precitany v subore rovna nejakemu pismenu v abecede, zvysi prislusny index pola hist o 1 */
+				if (upraveny_text[i] == ('A' + j))
+				{
+					hist[j]++;
+					
+					/*ak je hodnota v hist[j] vacsia ako doteraz zistene max, prepise do hodnoty max danu pocetnost daneho znaku - vysledna tabulka vysledna bude teda vysoka max + 1 */
+					if (hist[j] >= max)
+					{
+						max = hist[j];						
+					}
+				}
+			}
+		}
+		
+		/* TOTO VYPISUJE NORMALNU POCETNOST PISMEN V UPRAVENOM SUBORE - JE TO LEN NA TEST CI TO ROBI SPRAVNEs
+		for (i = 0; i < 26; i++)
+		{ 
+			printf("%.0lf", hist[i]);	
+		}	*/
+		
+		/*prepisuje hodnoty v poli hist[] do percent */
+		for (j = 0; j < 26; j++)
+		{
+			hist[j] = ((hist[j] / pocet_upravenych_znakov) * 100);
+		}
+		
+		/*printf("Pocet upravenych znakov: %d\n", pocet_upravenych_znakov);
+		printf("Percenta v pismene F su %.2lf\n", hist[5]);*/
+		
+		/*vyprintuje finalnu tabulku vysoku max + 1 a siroku na sirku abecedy */
+		for (riadok = 1; riadok <= max + 1; riadok++)
+		{
+			for (stlpec = 0; stlpec < 26; stlpec++)
+			{
+				
+				if (riadok == max + 1)
+				{
+					printf("%c", 'A' + stlpec);
+				}
+				else
+				{					
+					if ((riadok == max) && (hist[stlpec] > 0))
+					{
+						printf("*");
+					}
+					else if ((riadok == max - 1) && (hist[stlpec] > 10))
+					{
+						printf("*");
+					}
+						
+					else if ((riadok == max - 2) && (hist[stlpec] > 20))
+						{
+							printf("*");
+						}
+					else if ((riadok == max - 3) && (hist[stlpec] > 30))
+					{
+						printf("*");
+					}
+					else if ((riadok == max - 4) && (hist[stlpec] > 40))
+					{
+						printf("*");
+					}
+					else if ((riadok == max - 5) && (hist[stlpec] > 50))
+					{
+						printf("*");
+					}						
+					
+					else if ((riadok == max - 6) && (hist[stlpec] > 60))
+					{
+						printf("*");
+					}
+					else if ((riadok == max - 7) && (hist[stlpec] > 70))
+					{
+						printf("*");
+					}
+					else if ((riadok == max - 8) && (hist[stlpec] > 80))
+					{
+						printf("*");
+					}
+					else if ((riadok == max - 9) && (hist[stlpec] > 90))
+					{
+						printf("*");
+					}													
+					else
+					{
+						printf(" ");
+					}
+				}
+			}
+			printf("\n");
+		}
+	}	
 }
 
 void sifra(int upraveny_text[], int pocet_upravenych_znakov, int *nacitane_ucko)
