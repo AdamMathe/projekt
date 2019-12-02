@@ -11,3 +11,4 @@ Copyright and licensing information.
 Contact information for the distributor or programmer.
 Known bugs.
 Troubleshooting.
+Najlepsie
